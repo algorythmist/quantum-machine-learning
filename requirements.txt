@@ -1,0 +1,3 @@
+pennylane
+scikit-learn
+pytest
