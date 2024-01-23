@@ -5,7 +5,8 @@ import pennylane as qml
 from pennylane import GradientDescentOptimizer, AdamOptimizer
 from pennylane import numpy as pnp
 
-from penny.models import QMLModel
+
+from penny.models import QMLModel, MultiClassQMLModel
 from utils.metrics import square_loss
 
 
@@ -30,7 +31,8 @@ class Classifier(ABC):
 
 class BinaryClassifier(Classifier):
 
-    def __init__(self, model: QMLModel,
+    def __init__(self,
+                 model: QMLModel,
                  weights_shape: Tuple[int, int, int],
                  optimizer: GradientDescentOptimizer = AdamOptimizer(0.02),
                  loss_fn=square_loss,
@@ -55,6 +57,7 @@ class BinaryClassifier(Classifier):
         return self.circuit(weights, features) + bias
 
     def predict(self, features):
+        # TODO: should this be 0-1 instead?
         return pnp.sign(self._output(self.weights, self.bias, features))
 
     def cost(self, weights, bias, features, labels):
@@ -80,3 +83,5 @@ class BinaryClassifier(Classifier):
         weights, bias = parameters
         self.weights = pnp.array(weights, requires_grad=True)
         self.bias = pnp.array(bias, requires_grad=True)
+
+

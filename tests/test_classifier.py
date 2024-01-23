@@ -2,13 +2,13 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
 from penny.classifier import *
 from penny.models import StronglyEntangledBinaryModel
 
 
-def test_fit():
+def test_binary_iris():
     pnp.random.seed(42)
 
     X, y = load_iris(return_X_y=True)
@@ -28,3 +28,5 @@ def test_fit():
     predictions = classifier.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
     assert accuracy == 1.0
+
+
