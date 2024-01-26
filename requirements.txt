@@ -1,4 +1,8 @@
 pennylane
 scikit-learn
 torch
+matplotlib
 pytest
+jupyter
+jupyter_contrib_nbextensions
+ipykernel

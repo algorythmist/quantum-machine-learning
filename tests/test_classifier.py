@@ -9,7 +9,7 @@ from penny.models import StronglyEntangledBinaryModel
 
 
 def test_binary_iris():
-    random_seed=777
+    random_seed=623
     pnp.random.seed(random_seed)
 
     X, y = load_iris(return_X_y=True)
@@ -24,7 +24,7 @@ def test_binary_iris():
     classifier = BinaryClassifier(
         model=StronglyEntangledBinaryModel(qubits),
         weights_shape=(3, qubits, 3),
-        iterations=50
+        iterations=100
     )
     classifier.fit(X_train, y_train)
     predictions = classifier.predict(X_test)

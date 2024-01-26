@@ -1,6 +1,7 @@
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
 import torch
+from sklearn.preprocessing import MinMaxScaler
+
 
 def scale_for_angle_encoding(features):
     # scale the features to be between -pi and pi
