@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from penny.models import MultiClassQMLModel
 from penny.torch_classifier import IterationTorchClassifier, EpochTorchClassifier
 from utils.preprocess import tensorize
+from utils.reporting import HistoryTracker
 
 
 def test_torch_iteration_iris():
@@ -23,13 +24,16 @@ def test_torch_iteration_iris():
                                                                                  shuffle=True, test_size=0.2,
                                                                                  random_state=random_seed)
 
+    history_tracker = HistoryTracker(X_train, y_train)
     qubits = 4
     num_classes = 3
     classifier = IterationTorchClassifier(
         model=MultiClassQMLModel(qubits, num_classes=num_classes),
         num_classes=num_classes,
         weights_shape=(3, qubits, 3),
-        iterations=100
+        iterations=100,
+        # Takes too long
+        #report_fn=history_tracker
     )
     classifier.fit(X_train, y_train_hot)
     predictions = classifier.predict(X_test)

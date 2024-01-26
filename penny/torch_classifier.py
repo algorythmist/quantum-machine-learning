@@ -9,8 +9,8 @@ from torch import optim
 from torch.autograd import Variable
 from torch.nn import CrossEntropyLoss
 
-from penny.classifier import Classifier
-from penny.models import QMLModel, MultiClassQMLModel
+from penny.classifier import Classifier, ClassifierContext
+from penny.models import QMLModel
 
 
 class BaseTorchClassifier(Classifier, ABC):
@@ -59,7 +59,8 @@ class IterationTorchClassifier(BaseTorchClassifier):
                  loss_builder=lambda: CrossEntropyLoss(),
                  batch_size=5,
                  iterations=100,
-                 device="default.qubit"):
+                 device="default.qubit",
+                 report_fn=None):
         self.model = model
         self.optimizer_builder = optimizer_builder
         self.loss_builder = loss_builder
@@ -72,29 +73,28 @@ class IterationTorchClassifier(BaseTorchClassifier):
         self.shape = weights.shape
         self.batch_size = batch_size
         self.iterations = iterations
+        self.report_fn = report_fn
 
     def fit(self, X_train, y_train_hot):
         optimizer = self.optimizer_builder(self.params)
         loss = self.loss_builder()
         for iteration in range(self.iterations):
             batch_index = torch.LongTensor(np.random.randint(0, len(y_train_hot), (self.batch_size,)))
-            X_train_batch = X_train[batch_index]
-            y_train_batch = y_train_hot[batch_index]
+            features_batch = X_train[batch_index]
+            labels_batch = y_train_hot[batch_index]
             optimizer.zero_grad()
-            predictions = self.classify_probabilities(X_train_batch)
-            curr_cost = loss(predictions, y_train_batch)
+            predictions = self.classify_probabilities(features_batch)
+            curr_cost = loss(predictions, labels_batch)
             curr_cost.backward()
             optimizer.step()
-            # report progress
-            # if (iteration + 1) % 10 == 0:
-            #     predictions_train = self.classify(X_train)
-            #     y_train = self.one_hot_to_label(y_train_hot)
-            #     accuracy = accuracy_score(y_train, predictions_train)
-            #     print(f"Iter: {iteration + 1:5d}  Loss = {curr_cost.item()}, Accuracy: {accuracy:0.7f} ")
+            if self.report_fn:
+                self.report_fn(ClassifierContext(self, iteration, self.params,
+                                                    features_batch, labels_batch))
         return self.params
 
-class EpochTorchClassifier(BaseTorchClassifier):
 
+class EpochTorchClassifier(BaseTorchClassifier):
+    #TODO: add reporting
     def __init__(self, model: QMLModel,
                  num_classes: int,
                  weights_shape: Tuple[int, int, int],
@@ -114,7 +114,7 @@ class EpochTorchClassifier(BaseTorchClassifier):
         self.params = (weights, bias)
         self.shape = weights.shape
         self.batch_size = batch_size
-        self.epochs=epochs
+        self.epochs = epochs
 
     def fit(self, X_train, y_train_hot):
         data_loader = torch.utils.data.DataLoader(
@@ -139,7 +139,7 @@ class EpochTorchClassifier(BaseTorchClassifier):
                 epoch_accuracy += accuracy_score(y_train, torch.argmax(predictions, axis=1).detach().numpy())
                 batches += 1
 
-            #TODO report progress
+            # TODO report progress
             epoch_loss = epoch_loss / batches
             epoch_accuracy = epoch_accuracy / batches
             print(f"Epoch: {epoch}. Avg loss = {epoch_loss}, avg training accuracy = {epoch_accuracy}")
