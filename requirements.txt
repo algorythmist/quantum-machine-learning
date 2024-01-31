@@ -2,6 +2,7 @@ pennylane
 scikit-learn
 torch
 matplotlib
+pandas
 pytest
 jupyter
 jupyter_contrib_nbextensions
