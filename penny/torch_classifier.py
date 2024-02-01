@@ -90,7 +90,6 @@ class IterationTorchClassifier(BaseTorchClassifier):
             if self.report_fn:
                 self.report_fn(ClassifierContext(self, iteration, self.params,
                                                     features_batch, labels_batch))
-        return self.params
 
 
 class EpochTorchClassifier(BaseTorchClassifier):
@@ -143,4 +142,4 @@ class EpochTorchClassifier(BaseTorchClassifier):
             epoch_loss = epoch_loss / batches
             epoch_accuracy = epoch_accuracy / batches
             print(f"Epoch: {epoch}. Avg loss = {epoch_loss}, avg training accuracy = {epoch_accuracy}")
-        return self.params
+
