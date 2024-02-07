@@ -6,8 +6,14 @@ def inverse_stereographic_projection(X):
     return np.hstack([(s2 - 1) / (s2 + 1), 2 * X / (s2 + 1)])
 
 
+def inverse_orthographic(x):
+    x_0 = np.sqrt(1 - np.linalg.norm(x) ** 2)
+    return [x_0] + x.tolist()
+
+
 def arbitrary_inverse_projection(a, x_dash_in_Rn):
-    # a should be the x_0 coordinate of the centre of projection. x should be a list of length n, corresponding to (x_1', ... , x_n') as in the diagram
+    # a should be the x_0 coordinate of the centre of projection.
+    # x should be a list of length n, corresponding to (x_1', ... , x_n')
     s = np.linalg.norm(x_dash_in_Rn)
 
     # New part - if a <-1, then this extends the domain of the projection to the entirety of Rn
