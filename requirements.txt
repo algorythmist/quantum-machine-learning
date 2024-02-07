@@ -3,6 +3,7 @@ scikit-learn
 torch
 matplotlib
 pandas
+pyarrow
 pytest
 jupyter
 jupyter_contrib_nbextensions
