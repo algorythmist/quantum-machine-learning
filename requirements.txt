@@ -6,4 +6,3 @@ pandas
 pyarrow
 pytest
 jupyter
-ipykernel
