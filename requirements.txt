@@ -6,5 +6,4 @@ pandas
 pyarrow
 pytest
 jupyter
-jupyter_contrib_nbextensions
 ipykernel

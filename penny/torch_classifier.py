@@ -93,7 +93,7 @@ class IterationTorchClassifier(BaseTorchClassifier):
 
 
 class EpochTorchClassifier(BaseTorchClassifier):
-    #TODO: add reporting
+
     def __init__(self, model: QMLModel,
                  num_classes: int,
                  weights_shape: Tuple[int, int, int],
@@ -101,7 +101,8 @@ class EpochTorchClassifier(BaseTorchClassifier):
                  loss_builder=lambda: CrossEntropyLoss(),
                  batch_size=5,
                  epochs=10,
-                 device="default.qubit"):
+                 device="default.qubit",
+                 report_fn=None):
         self.model = model
         self.optimizer_builder = optimizer_builder
         self.loss_builder = loss_builder
@@ -114,6 +115,7 @@ class EpochTorchClassifier(BaseTorchClassifier):
         self.shape = weights.shape
         self.batch_size = batch_size
         self.epochs = epochs
+        self.report_fn = report_fn
 
     def fit(self, X_train, y_train_hot):
         data_loader = torch.utils.data.DataLoader(
@@ -138,8 +140,14 @@ class EpochTorchClassifier(BaseTorchClassifier):
                 epoch_accuracy += accuracy_score(y_train, torch.argmax(predictions, axis=1).detach().numpy())
                 batches += 1
 
-            # TODO report progress
             epoch_loss = epoch_loss / batches
+
+            if self.report_fn:
+                self.report_fn(ClassifierContext(self, epoch, self.params,
+                                                 current_batch_X = None,
+                                                 current_batch_y = None,
+                                                 current_cost=epoch_loss))
+
             epoch_accuracy = epoch_accuracy / batches
             print(f"Epoch: {epoch}. Avg loss = {epoch_loss}, avg training accuracy = {epoch_accuracy}")
 
