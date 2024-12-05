@@ -1,8 +1,11 @@
-pennylane
-scikit-learn
-torch
+jax
+jupyter
 matplotlib
+optax
 pandas
+pennylane
 pyarrow
 pytest
-jupyter
+scikit-learn
+torch
+

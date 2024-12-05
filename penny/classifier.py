@@ -84,7 +84,6 @@ class BinaryClassifier(Classifier):
         return self.circuit(weights, features) + bias
 
     def predict(self, features):
-        # TODO: should this be 0-1 instead?
         return pnp.sign(self._output(self.weights, self.bias, features))
 
     def cost(self, weights, bias, features, labels):
