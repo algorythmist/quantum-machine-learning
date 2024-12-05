@@ -4,6 +4,7 @@ matplotlib
 optax
 pandas
 pennylane
+pickleshare
 pyarrow
 pytest
 scikit-learn
