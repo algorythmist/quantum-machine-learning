@@ -9,4 +9,4 @@ pyarrow
 pytest
 scikit-learn
 torch
-
+torchvision

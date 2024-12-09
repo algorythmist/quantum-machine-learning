@@ -1,2 +1,12 @@
 # quantum-machine-learning
-Quantum Machine Learning tools
+
+## Setup
+
+```commandline
+pip install -r requirements.txt
+```
+
+``
+ipython kernel install --name "quantum-machine-learning" --user
+``
+
